@@ -1,127 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Palugada Store</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f9; /* Light background color */
-        }
+{% extends 'base.html' %}
 
-        .header {
-            text-align: center;
-            margin-top: 20px;
-            color: #6a1b9a; /* Soft purple color for the header text */
-        }
-
-        .line {
-            border: 0;
-            height: 1px;
-            background: #6a1b9a; /* Soft purple line */
-            margin: 2rem 0; /* Add padding effect */
-        }
-
-        .navbar {
-            display: flex;
-            justify-content: center;
-            background-color: #d1c4e9; /* Soft purple background */
-            padding: 10px 0;
-        }
-
-        .navbar a {
-            color: #6a1b9a; /* Soft purple text color */
-            padding: 14px 20px;
-            text-decoration: none;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .navbar a:hover {
-            background-color: #b39ddb; /* Slightly darker soft purple for hover effect */
-            color: white;
-        }
-
-        .cards {
-            display: inline-block;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 10px;
-            margin: 10px;
-            width: 200px;
-            text-align: center;
-            vertical-align: top;
-            background-color: #ffffff; /* White background for cards */
-        }
-
-        .image-product {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 4px;
-        }
-
-        h5, p {
-            color: #6a1b9a; /* Soft purple text color */
-        }
-    </style>
-</head>
-<body>
-    <!-- Navbar -->
-    <div class="navbar">
-        <a href="#">Home</a>
-        <a href="#">Search</a>
-        <a href="#">Login</a>
-    </div>
-
+{% block content %}
+<div class="py-10">
     <!-- Header -->
-    <h1 class="header">
-        <strong>Welcome To {{ nama_toko }} 🥰</strong>
-        <p>By : {{ nama_pemilik }} from {{ kelas_pemilik }}</p>
-    </h1>
+    <header class="text-center py-20 custom-bg p-5">
+        <h1 class="text-3xl text-white mb-2">
+            <strong>Welcome To {{ nama_toko }} 🥰</strong>
+        </h1>
+        <p class="text-lg text-white">
+            By: {{ nama_pemilik }} from {{ kelas_pemilik }}
+        </p>
+        <h3 class="text-xl text-center font-semibold text-white mt-4">
+            Our store provides the best quality and also cheap!
+        </h3>
+    </header>
 
-    <h3 class="header">Our store provides the best quality and also cheap!</h3>
-
-    <hr class="line"/>
-
-    <!-- Product Cards -->
-    <div class="cards">
-        <img src="{{image}}" class="image-product" alt="{{ name }}" />
-        <h5>{{ name }}</h5>
-        <p>{{ price }}</p>
-        <p>{{ description }}</p>
+    <!-- Add New Product Button -->
+    <div class="text-center mt-10">
+        <a href="{% url 'main:create_product_entry' %}">
+            <button class="bg-red-500 text-white px-4 py-2 rounded">Add New Product</button>
+        </a>
     </div>
-   
-    <!-- <div class="cards">
-        <img src="./kaktus.avif" class="image-product" alt="Kaktus" />
-        <h5>Kaktus</h5>
-        <p>Rp. 50.000,00</p>
-        <p>Description ~~~</p>
+    <!-- Product Cards Section -->
+    <div class="container mx-auto py-10">
+        {% if not product_entries %}
+            <p class="text-center text-gray-700">Belum ada produk baru</p>
+        {% else %}
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {% for product_entry in product_entries %}
+                <div class="w-60 m-4 rounded-lg shadow-md overflow-hidden border-2 border-pink-500">
+                    <img src="{{ product_entry.image.url }}" class="w-full h-48 object-cover p-3 rounded-2xl" alt="{{ product_entry.name }}" />
+                    <div class="px-5 py-3 text-left">
+                        <h5 class="font-bold text-xl text-pink-500 mb-4">{{ product_entry.name }}</h5>
+                        <p class="text-gray-700 text-lg font-medium mb-2">{{ product_entry.price }}</p>
+                        <p class="text-gray-600 text-sm leading-relaxed">{{ product_entry.description }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% endif %}
     </div>
-    
-    <div class="cards">
-        <img src="./tumbler.avif" class="image-product" alt="Tumbler" />
-        <h5>Tumbler</h5>
-        <p>Rp. 140.000,00</p>
-        <p>Description ~~~</p>
-    </div>
-    
-    <div class="cards">
-        <img src="./camera.avif" class="image-product" alt="Tumbler" />
-        <h5>Tumbler</h5>
-        <p>Rp. 140.000,00</p>
-        <p>Description ~~~</p>
-    </div>
-
-    <div class="cards">
-        <img src="./kaktus.avif" class="image-product" alt="Tumbler" />
-        <h5>Tumbler</h5>
-        <p>Rp. 140.000,00</p>
-        <p>Description ~~~</p>
-    </div> -->
-</body>
-</html>
+</div>
+{% endblock content %}

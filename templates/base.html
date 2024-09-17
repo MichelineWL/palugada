@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palugada Store</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@latest/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        /* Custom background image using a class */
+        .custom-bg {
+            background-image: url('https://wallpapers.com/images/hd/aesthetic-laptop-drawing-kzs2xmyje63oewbt.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans m-0 p-0">
+    <!-- Navbar -->
+    <nav class="bg-red-400 w-full h-20 flex items-center justify-between px-10 sticky top-0">
+        <img src="{% static 'path/to/logo.png' %}" class="w-32" alt="Logo"/>
+        <ul class="flex space-x-20">
+            <li>
+                <a href="" class="text-white hover:underline cursor-pointer">Home</a>
+            </li>
+            <li>
+                <a href="" class="text-white hover:underline px-4 py-2 rounded border border-white cursor-pointer">Sign In</a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content Block -->
+    <div class="container mx-auto">
+        {% block content %}
+        {% endblock content %}
+    </div>
+
+    <!-- Footer (Optional) -->
+    <footer class="text-center py-5 mt-10 bg-gray-200">
+        <p>© 2024 Palugada Store. All Rights Reserved.</p>
+    </footer>
+</body>
+</html>
