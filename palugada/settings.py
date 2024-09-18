@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-ecs6_&74l#2d_9y71qff1(4of5%kqp**tgql-$6zr-2qs18(r&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "http://micheline-wijaya-palugada.pbp.cs.ui.ac.id/", "https://micheline-wijaya-palugada.pbp.cs.ui.ac.id/"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "micheline-wijaya-palugada.pbp.cs.ui.ac.id"]
 
 
 # Application definition
@@ -127,3 +127,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+CSRF_TRUSTED_ORIGINS = ["http://localhost","http://127.0.0.1","http://micheline-wijaya-palugada.pbp.cs.ui.ac.id/", "https://micheline-wijaya-palugada.pbp.cs.ui.ac.id/"]
