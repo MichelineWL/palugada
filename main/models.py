@@ -10,4 +10,4 @@ class Product(models.Model):
 
     @property
     def __str__(self):
-        return self.name  # makes admin and shell outputs more readable 
+        return self.name  # makes admin and shell outputs more readable  
