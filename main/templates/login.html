@@ -5,28 +5,32 @@
 {% endblock meta %}
 
 {% block content %}
-<div class="login">
-  <h1>Login</h1>
+<div class="flex justify-center items-center min-h-screen">
+  <div class="bg-white p-10 rounded-lg shadow-lg w-full max-w-md">
+    <h1 class="text-3xl font-bold text-center mb-6">Login</h1>
 
-  <form method="POST" action="">
-    {% csrf_token %}
-    <table>
-      {{ form.as_table }}
-      <tr>
-        <td></td>
-        <td><input class="btn login_btn" type="submit" value="Login" /></td>
-      </tr>
-    </table>
-  </form>
+    <form method="POST" action="">
+      {% csrf_token %}
+      <div class="space-y-4">
+        {{ form.as_p }}
+      </div>
+      <div class="mt-6 flex justify-center">
+        <input class="btn login_btn bg-pink-300 text-white px-4 py-2 rounded cursor-pointer hover:bg-pink-500 duration-500" type="submit" value="Login" />
+      </div>
+    </form>
 
-  {% if messages %}
-  <ul>
-    {% for message in messages %}
-    <li>{{ message }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %} Don't have an account yet?
-  <a href="{% url 'main:register' %}">Register Now</a>
+    {% if messages %}
+    <ul class="mt-4 text-center text-red-500">
+      {% for message in messages %}
+      <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    <p class="mt-6 text-center">
+      Don't have an account yet?
+      <a href="{% url 'main:register' %}" class="text-purple-600 hover:underline">Register Now</a>
+    </p>
+  </div>
 </div>
-
 {% endblock content %}
