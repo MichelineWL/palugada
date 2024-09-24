@@ -40,5 +40,9 @@
             </div>
         {% endif %}
     </div>
+    <h5>Sesi terakhir login: {{ last_login }}</h5>
+    <a href="{% url 'main:logout' %}">
+        <button>Logout</button>
+    </a>
 </div>
 {% endblock content %}
