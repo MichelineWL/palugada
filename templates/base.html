@@ -19,8 +19,20 @@
 <body class="bg-gray-100 font-sans m-0 p-0">
     <!-- Navbar -->
     <nav class="bg-red-400 w-full h-20 flex items-center justify-between px-10 sticky top-0">
+        <!-- Logo -->
         <img src="{% static 'logo.png' %}" class="w-16" alt="Logo"/>
-        <ul class="flex space-x-20">
+        
+        <!-- Mobile Menu Button (Hamburger Icon) -->
+        <div class="md:hidden">
+            <button id="mobile-menu-button" class="text-white focus:outline-none">
+                <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Desktop Menu -->
+        <ul class="hidden md:flex space-x-20">
             <li>
                 <a href="{% url 'main:show_main' %}" class="text-white hover:underline cursor-pointer">Home</a>
             </li>
@@ -28,6 +40,18 @@
                 <a href="{% url 'main:register' %}" class="text-white hover:underline px-4 py-2 rounded border border-white cursor-pointer">Sign In</a>
             </li>
         </ul>
+
+        <!-- Mobile Menu (hidden by default) -->
+        <div id="mobile-menu" class="hidden absolute top-20 left-0 w-full bg-red-400 text-center md:hidden">
+            <ul class="space-y-4 py-4">
+                <li>
+                    <a href="{% url 'main:show_main' %}" class="text-white hover:underline cursor-pointer">Home</a>
+                </li>
+                <li>
+                    <a href="{% url 'main:register' %}" class="text-white hover:underline px-4 py-2 rounded border border-white cursor-pointer">Sign In</a>
+                </li>
+            </ul>
+        </div>
     </nav>
 
     <!-- Main Content Block -->
@@ -40,5 +64,15 @@
     <footer class="text-center py-5 mt-10 bg-gray-200">
         <p>© 2024 Palugada Store. All Rights Reserved.</p>
     </footer>
+
+    <!-- JavaScript for Mobile Menu Toggle -->
+    <script>
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
 </body>
 </html>
