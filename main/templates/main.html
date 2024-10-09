@@ -18,8 +18,7 @@
 
     <!-- Add New Product Button -->
     <div class="text-center mt-10">
-        <button class="bg-red-500 text-white px-4 py-2 rounded" id="addNewProductButton">Add New Product</button>
-        <a href="{% url 'main:create_product_entry' %}" class="bg-indigo-400 hover:bg-indigo-400 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105 mx-4 ">
+        <a href="{% url 'main:create_product_entry' %}" class="bg-red-500 hover:bg-red-400 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105 mx-4">
             Add New Product Entry
         </a>
         <button data-modal-target="crudModal" data-modal-toggle="crudModal" class="btn bg-indigo-700 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105" onclick="showModal();">
@@ -34,9 +33,7 @@
             <div id="crudModalContent" class="relative bg-white rounded-lg shadow-lg w-5/6 sm:w-3/4 md:w-1/2 lg:w-1/3 mx-4 sm:mx-0 transform scale-95 opacity-0 transition-transform transition-opacity duration-300 ease-out">
                 <!-- Modal header -->
                 <div class="flex items-center justify-between p-4 border-b rounded-t">
-                    <h3 class="text-xl font-semibold text-gray-900">
-                        Add New Product Entry
-                    </h3>
+                    <h3 class="text-xl font-semibold text-gray-900">Add New Product Entry</h3>
                     <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center" id="closeModalBtn">
                         <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
@@ -48,13 +45,38 @@
                 <div class="px-6 py-4 space-y-6">
                     <form method="POST" enctype="multipart/form-data" class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-md" id="productEntryForm">
                         {% csrf_token %}
-                        {{ form.as_p }}
+                        
+                        <!-- Input for Product Name -->
+                        <div class="mb-4">
+                            <label for="productName" class="block text-sm font-medium text-gray-700">Nama Produk</label>
+                            <input type="text" name="productName" id="productName" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        </div>
+
+                        <!-- Input for Price -->
+                        <div class="mb-4">
+                            <label for="productPrice" class="block text-sm font-medium text-gray-700">Harga</label>
+                            <input type="number" name="productPrice" id="productPrice" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" step="0.01">
+                        </div>
+
+                        <!-- Input for Description -->
+                        <div class="mb-4">
+                            <label for="productDescription" class="block text-sm font-medium text-gray-700">Deskripsi</label>
+                            <textarea name="productDescription" id="productDescription" rows="4" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
+                        </div>
+
+                        <!-- Input for Image Upload -->
+                        <div class="mb-4">
+                            <label for="productImage" class="block text-sm font-medium text-gray-700">Upload Gambar</label>
+                            <input type="file" name="productImage" id="productImage" accept="image/*" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        </div>
+                        
                     </form>
                 </div>
+
                 <!-- Modal footer -->
                 <div class="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-2 p-6 border-t border-gray-200 rounded-b justify-center md:justify-end">
                     <button type="button" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg" id="cancelButton">Cancel</button>
-                    <button type="submit" id="submitProductEntry" form="productEntryForm" class="bg-indigo-700 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg">Add Product Entry</button>
+                    <button type="submit" id="submitProductEntry" form="productEntryForm" class="bg-pink-700 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded-lg">Add Product Entry</button>
                 </div>
             </div>
         </div>
@@ -94,77 +116,62 @@
                             <p class="text-gray-600 text-sm leading-relaxed">${product_entry.description}</p>
                         </div>
                         <div class="flex justify-between px-5 py-3">
-                            <a href="{% url 'main:edit_product' product_entry.pk %}">
-                                <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 flex items-center">
-                                    <i class="fas fa-edit mr-2"></i>
-                                    Edit
-                                </button>
-                            </a>
-                            <a href="{% url 'main:delete_product' product_entry.pk %}">
-                                <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700 flex items-center">
-                                    <i class="fas fa-trash-alt mr-2"></i>
-                                    Delete
-                                </button>
-                            </a>
+                            <div class="absolute top-0 -right-4 flex space-x-1">
+                                <a href="/edit/${product_entry.id}" class="bg-yellow-500 hover:bg-yellow-600 text-white rounded-full p-2">Edit</a>
+                                <a href="/delete/${product_entry.id}" class="bg-red-600 hover:bg-red-700 text-white rounded-full p-2">Delete</a>
+                            </div>
                         </div>
                     </div>
                 `;
             });
             htmlString += `</div>`;
         }
-
-        document.getElementById("product_entry_cards").innerHTML = htmlString; // Set inner HTML after content creation
+        document.getElementById("product_entry_cards").innerHTML = htmlString;
     }
-
-    refreshProductEntries();
-
-    const modal = document.getElementById('crudModal');
-    const modalContent = document.getElementById('crudModalContent');
 
     function showModal() {
-        modal.classList.remove('hidden'); 
-        setTimeout(() => {
-            modalContent.classList.remove('opacity-0', 'scale-95');
-            modalContent.classList.add('opacity-100', 'scale-100');
-        }, 50); 
+        const modal = document.getElementById("crudModal");
+        modal.classList.remove("hidden"); // Show modal
+        modal.classList.add("flex"); // Set to flex for centering
     }
 
-    function hideModal() {
-        modalContent.classList.remove('opacity-100', 'scale-100');
-        modalContent.classList.add('opacity-0', 'scale-95');
+    document.getElementById("closeModalBtn").onclick = function() {
+        document.getElementById("crudModal").classList.add("hidden");
+    };
 
-        setTimeout(() => {
-            modal.classList.add('hidden');
-        }, 150); 
-    }
+    document.getElementById("cancelButton").onclick = function() {
+        document.getElementById("crudModal").classList.add("hidden");
+    };
 
-    document.getElementById("cancelButton").addEventListener("click", hideModal);
-    document.getElementById("closeModalBtn").addEventListener("click", hideModal);
-    document.getElementById("addNewProductButton").addEventListener("click", showModal);
+    // Handle form submission
+    document.getElementById("productEntryForm").onsubmit = async function(event) {
+        event.preventDefault(); // Prevent default form submission
+        const formData = new FormData(this); // Get form data
 
-    document.getElementById("productEntryForm").addEventListener("submit", (e) => {
-        e.preventDefault();
-        addProductEntry();
-    });
+        // Send the form data using AJAX
+        try {
+            const response = await fetch("{% url 'main:create_product_entry' %}", {
+                method: 'POST',
+                body: formData,
+            });
 
-    function addProductEntry() {
-        fetch("{% url 'main:add_product_ajax' %}", {
-            method: "POST",
-            body: new FormData(document.getElementById("productEntryForm")),
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert("Product added successfully!");
-                hideModal();
-                refreshProductEntries(); 
+            if (response.ok) {
+                // If successful, refresh the product entries and close the modal
+                await refreshProductEntries();
+                document.getElementById("crudModal").classList.add("hidden");
+                this.reset(); // Reset form fields
             } else {
-                alert("Failed to add product: " + data.error);
+                // Handle error (display a message or alert)
+                alert("Error adding product entry. Please try again.");
             }
-        })
-        .catch(error => {
-            console.error("Error adding product:", error);
-        });
-    }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
+    // Initial loading of product entries
+    refreshProductEntries();
 </script>
+
+
 {% endblock %}
