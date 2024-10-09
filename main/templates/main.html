@@ -6,7 +6,7 @@
     <!-- Header -->
     <header class="text-center py-20 custom-bg p-5">
         <h1 class="text-3xl text-white mb-2">
-            <strong>Welcome To {{ nama_toko }} 🥰</strong>
+            <strong>Welcome To {{ nama_toko }} 🥰</strong> 
         </h1>
         <p class="text-lg text-white">
             By: {{ nama_pemilik }} from {{ kelas_pemilik }}
@@ -18,50 +18,160 @@
 
     <!-- Add New Product Button -->
     <div class="text-center mt-10">
-        <a href="{% url 'main:create_product_entry' %}">
-            <button class="bg-red-500 text-white px-4 py-2 rounded">Add New Product</button>
+        <a href="{% url 'main:create_product_entry' %}" class="bg-red-500 hover:bg-red-400 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105 mx-4">
+            Add New Product Entry
         </a>
+        <button data-modal-target="crudModal" data-modal-toggle="crudModal" class="btn bg-indigo-700 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105" onclick="showModal();">
+            Add New Product Entry by AJAX
+        </button>
     </div>
 
     <!-- Product Cards Section -->
     <div class="container mx-auto flex justify-center py-10">
-        {% if not product_entries %}
-            <div class="flex flex-col items-center justify-center">
-                <img src="{% static 'image/sedih-banget.png' %}" alt="sad face" class="w-32 h-32 mb-6 object-contain" />
-                <p class="text-center text-gray-700">Belum ada produk baru</p>
-            </div>
-        {% else %}
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {% for product_entry in product_entries %}
-                <div class="w-60 m-4 rounded-lg shadow-md overflow-hidden border-2 border-pink-500">
-                    <img src="{{ product_entry.image.url }}" class="w-full h-48 object-cover p-3 rounded-2xl" alt="{{ product_entry.name }}" />
-                    <div class="px-5 py-3 text-left">
-                        <h5 class="font-bold text-xl text-pink-500 mb-4">{{ product_entry.name }}</h5>
-                        <p class="text-gray-700 text-lg font-medium mb-2">{{ product_entry.price }}</p>
-                        <p class="text-gray-600 text-sm leading-relaxed">{{ product_entry.description }}</p>
-                    </div>
-                    <div class="flex justify-between px-5 py-3">
-                        <a href="{% url 'main:edit_product' product_entry.pk %}">
-                            <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 flex items-center">
-                                <i class="fas fa-edit mr-2"></i>
-                                Edit
-                            </button>
-                        </a>
-                        <a href="{% url 'main:delete_product' product_entry.pk %}">
-                            <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700 flex items-center">
-                                <i class="fas fa-trash-alt mr-2"></i>
-                                Delete
-                            </button>
-                        </a>
-                    </div>
+        <div id="product_entry_cards"></div>
+        <div id="crudModal" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 z-50 w-full flex items-center justify-center bg-gray-800 bg-opacity-50 overflow-x-hidden overflow-y-auto transition-opacity duration-300 ease-out">
+            <div id="crudModalContent" class="relative bg-white rounded-lg shadow-lg w-5/6 sm:w-3/4 md:w-1/2 lg:w-1/3 mx-4 sm:mx-0 transform scale-95 opacity-0 transition-transform transition-opacity duration-300 ease-out">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-4 border-b rounded-t">
+                    <h3 class="text-xl font-semibold text-gray-900">Add New Product Entry</h3>
+                    <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center" id="closeModalBtn">
+                        <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
                 </div>
-                {% endfor %}
+                <!-- Modal body -->
+                <div class="px-6 py-4 space-y-6">
+                    <form method="POST" enctype="multipart/form-data" class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-md" id="productEntryForm">
+                        {% csrf_token %}
+                        
+                        <!-- Input for Product Name -->
+                        <div class="mb-4">
+                            <label for="productName" class="block text-sm font-medium text-gray-700">Nama Produk</label>
+                            <input type="text" name="productName" id="productName" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        </div>
+
+                        <!-- Input for Price -->
+                        <div class="mb-4">
+                            <label for="productPrice" class="block text-sm font-medium text-gray-700">Harga</label>
+                            <input type="number" name="productPrice" id="productPrice" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" step="0.01">
+                        </div>
+
+                        <!-- Input for Description -->
+                        <div class="mb-4">
+                            <label for="productDescription" class="block text-sm font-medium text-gray-700">Deskripsi</label>
+                            <textarea name="productDescription" id="productDescription" rows="4" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
+                        </div>
+
+                        <!-- Input for Image Upload -->
+                        <div class="mb-4">
+                            <label for="productImage" class="block text-sm font-medium text-gray-700">Upload Gambar</label>
+                            <input type="file" name="productImage" id="productImage" accept="image/*" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        </div>
+                        
+                    </form>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-2 p-6 border-t border-gray-200 rounded-b justify-center md:justify-end">
+                    <button type="button" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg" id="cancelButton">Cancel</button>
+                    <button type="submit" id="submitProductEntry" form="productEntryForm" class="bg-pink-700 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded-lg">Add Product Entry</button>
+                </div>
             </div>
-        {% endif %}
+        </div>
     </div>
     <h5>Sesi terakhir login: {{ last_login }}</h5>
     <a href="{% url 'main:logout' %}">
         <button class="border-2 border-red-600 p-2 m-3 rounded-md bg-white hover:border-blue-600">Logout</button>
     </a>
 </div>
-{% endblock content %}
+
+<script>
+    async function getProductEntries() {
+        return fetch("{% url 'main:show_json' %}").then((res) => res.json());
+    }
+
+    async function refreshProductEntries() {
+        document.getElementById("product_entry_cards").innerHTML = ""; // Clear the current entries
+        const productEntries = await getProductEntries();
+        let htmlString = "";
+
+        if (productEntries.length === 0) {
+            htmlString = `
+                <div class="flex flex-col items-center justify-center min-h-[24rem] p-6">
+                    <img src="{% static 'image/sedih-banget.png' %}" alt="sad face" class="w-32 h-32 mb-6 object-contain" />
+                    <p class="text-center text-gray-700">Belum ada produk baru</p>
+                </div>
+            `;
+        } else {
+            htmlString += `<div class="grid grid-cols-1 md:grid-cols-3 gap-4">`;
+            productEntries.forEach(product_entry => {
+                htmlString += `
+                    <div class="w-60 m-4 rounded-lg shadow-md overflow-hidden border-2 border-pink-500">
+                        <img src="${product_entry.image.url}" class="w-full h-48 object-cover p-3 rounded-2xl" alt="${product_entry.name}" />
+                        <div class="px-5 py-3 text-left">
+                            <h5 class="font-bold text-xl text-pink-500 mb-4">${product_entry.name}</h5>
+                            <p class="text-gray-700 text-lg font-medium mb-2">${product_entry.price}</p>
+                            <p class="text-gray-600 text-sm leading-relaxed">${product_entry.description}</p>
+                        </div>
+                        <div class="flex justify-between px-5 py-3">
+                            <div class="absolute top-0 -right-4 flex space-x-1">
+                                <a href="/edit/${product_entry.id}" class="bg-yellow-500 hover:bg-yellow-600 text-white rounded-full p-2">Edit</a>
+                                <a href="/delete/${product_entry.id}" class="bg-red-600 hover:bg-red-700 text-white rounded-full p-2">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            htmlString += `</div>`;
+        }
+        document.getElementById("product_entry_cards").innerHTML = htmlString;
+    }
+
+    function showModal() {
+        const modal = document.getElementById("crudModal");
+        modal.classList.remove("hidden"); // Show modal
+        modal.classList.add("flex"); // Set to flex for centering
+    }
+
+    document.getElementById("closeModalBtn").onclick = function() {
+        document.getElementById("crudModal").classList.add("hidden");
+    };
+
+    document.getElementById("cancelButton").onclick = function() {
+        document.getElementById("crudModal").classList.add("hidden");
+    };
+
+    // Handle form submission
+    document.getElementById("productEntryForm").onsubmit = async function(event) {
+        event.preventDefault(); // Prevent default form submission
+        const formData = new FormData(this); // Get form data
+
+        // Send the form data using AJAX
+        try {
+            const response = await fetch("{% url 'main:create_product_entry' %}", {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok) {
+                // If successful, refresh the product entries and close the modal
+                await refreshProductEntries();
+                document.getElementById("crudModal").classList.add("hidden");
+                this.reset(); // Reset form fields
+            } else {
+                // Handle error (display a message or alert)
+                alert("Error adding product entry. Please try again.");
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
+    // Initial loading of product entries
+    refreshProductEntries();
+</script>
+
+
+{% endblock %}
